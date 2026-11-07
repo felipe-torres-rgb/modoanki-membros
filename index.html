@@ -1,0 +1,341 @@
+<!doctype html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="robots" content="noindex,nofollow">
+<title>ModoAnki R1 · Área do membro</title>
+<link rel="icon" href="chama.png">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:ital,wght@0,500;0,600;1,500&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
+<style>
+/* Layout: coluna única de leitura com trilho de 4 passos; cada passo é uma seção numerada com os downloads dentro. */
+:root{
+  --bg:#0D131D; --bg2:#121A27; --bg3:#172131;
+  --line:rgba(232,237,245,.09); --line2:rgba(232,237,245,.16);
+  --tx:#E8EDF5; --tx2:#A6B0C0; --tx3:#7D8899;
+  --gold:#C8A02A; --gold2:#E2BF55; --goldbg:rgba(200,160,42,.10); --goldln:rgba(200,160,42,.38);
+  --ok:#6FBF8E; --warn:#E8A65A;
+  --serif:"Spectral",Georgia,serif; --sans:"IBM Plex Sans",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--tx);font:16px/1.6 var(--sans);-webkit-font-smoothing:antialiased}
+a{color:var(--gold2)}
+:focus-visible{outline:2px solid var(--gold2);outline-offset:2px;border-radius:4px}
+.w{max-width:860px;margin:0 auto;padding-left:max(18px,env(safe-area-inset-left));padding-right:max(18px,env(safe-area-inset-right))}
+h1,h2,h3{font-family:var(--serif);font-weight:600;line-height:1.15;text-wrap:balance;margin:0}
+h1{font-size:clamp(32px,6vw,48px)}
+h2{font-size:clamp(24px,4vw,31px)}
+h3{font-size:19px}
+p{margin:0}
+.k{font:600 12px/1 var(--sans);letter-spacing:.14em;text-transform:uppercase;color:var(--gold)}
+.mut{color:var(--tx2)}
+
+/* topo */
+.top{position:sticky;top:0;z-index:20;background:rgba(13,19,29,.92);backdrop-filter:blur(8px);border-bottom:1px solid var(--line)}
+.top .w{display:flex;align-items:center;gap:12px;height:58px}
+.top img{width:22px;height:auto}
+.top b{font-family:var(--serif);font-size:19px;font-weight:600}
+.top nav{margin-left:auto;display:flex;gap:16px;font-size:14px;overflow-x:auto;white-space:nowrap}
+.top nav a{color:var(--tx2);text-decoration:none}
+.top nav a:hover{color:var(--tx)}
+@media (max-width:640px){.top nav{display:none}}
+
+/* hero */
+.hero{padding-block:56px 36px;display:flex;flex-direction:column;gap:18px}
+.hero p.lead{font-size:18px;color:var(--tx2);max-width:60ch}
+.hero p.lead strong{color:var(--tx);font-weight:600}
+.free{display:flex;gap:12px;align-items:flex-start;padding:14px 16px;border:1px solid var(--goldln);background:var(--goldbg);border-radius:12px;font-size:15px}
+.free b{color:var(--gold2)}
+
+/* trilho */
+.trilho{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;margin-top:6px}
+@media (max-width:640px){.trilho{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.trilho a{display:flex;flex-direction:column;gap:6px;padding:14px;border:1px solid var(--line2);border-radius:12px;background:var(--bg2);text-decoration:none;color:var(--tx);min-width:0}
+.trilho a:hover{border-color:var(--goldln)}
+.trilho .n{font:600 12px/1 var(--sans);color:var(--tx3);display:flex;justify-content:space-between;align-items:center}
+.trilho .n i{font-style:normal;width:18px;height:18px;border-radius:50%;border:1.5px solid var(--line2);display:grid;place-items:center;font-size:11px}
+.trilho a.feito .n i{background:var(--ok);border-color:var(--ok);color:#0D131D}
+.trilho a.feito .n i::after{content:"✓"}
+.trilho span{font-size:14.5px;line-height:1.35;font-weight:500}
+
+/* seções */
+section.passo{padding-block:44px;border-top:1px solid var(--line);display:flex;flex-direction:column;gap:18px;scroll-margin-top:70px}
+.passo-h{display:flex;gap:14px;align-items:baseline;flex-wrap:wrap}
+.passo-h .num{font:600 15px/1 var(--serif);color:var(--gold);border:1px solid var(--goldln);border-radius:50%;width:34px;height:34px;display:grid;place-items:center;flex:none}
+.passo-h h2{flex:1;min-width:0}
+.marcar{display:inline-flex;align-items:center;gap:8px;font:500 14px var(--sans);color:var(--tx2);cursor:pointer;user-select:none}
+.marcar input{accent-color:var(--ok);width:17px;height:17px}
+ol.steps,ul.lista{margin:0;padding-left:22px;display:flex;flex-direction:column;gap:8px;max-width:68ch}
+ol.steps li::marker{color:var(--gold);font-weight:600}
+ul.lista li::marker{color:var(--gold)}
+.dica{padding:12px 14px;border-left:3px solid var(--gold);background:var(--bg2);border-radius:0 10px 10px 0;font-size:15px;max-width:68ch}
+.aviso{padding:12px 14px;border-left:3px solid var(--warn);background:var(--bg2);border-radius:0 10px 10px 0;font-size:15px;max-width:68ch}
+kbd{font:500 13px var(--sans);background:var(--bg3);border:1px solid var(--line2);border-bottom-width:2px;border-radius:5px;padding:1px 6px;white-space:nowrap}
+
+/* downloads */
+.decks{display:grid;grid-template-columns:repeat(auto-fill,minmax(min(100%,240px),1fr));gap:10px}
+.dl{display:flex;gap:12px;align-items:center;padding:14px;border:1px solid var(--line2);border-radius:12px;background:var(--bg2);text-decoration:none;color:var(--tx);min-width:0;transition:border-color .2s}
+.dl:hover{border-color:var(--goldln)}
+.dl .sig{flex:none;width:46px;height:46px;border-radius:10px;background:var(--bg3);display:grid;place-items:center;font:600 14px var(--serif);color:var(--gold2);letter-spacing:.02em}
+.dl .tx{display:flex;flex-direction:column;min-width:0}
+.dl .tx b{font-weight:600;font-size:15px}
+.dl .tx small{color:var(--tx3);font-size:13px}
+.dl .seta{margin-left:auto;color:var(--gold2);font-size:18px}
+.dl.grande{border-color:var(--goldln);background:linear-gradient(160deg,rgba(200,160,42,.12),var(--bg2) 60%)}
+.novo{font:600 10.5px/1 var(--sans);letter-spacing:.08em;text-transform:uppercase;color:#0D131D;background:var(--gold2);border-radius:99px;padding:3px 6px;margin-left:6px;vertical-align:2px}
+
+/* recursos do add-on */
+.feats{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr));gap:10px}
+.feat{padding:14px;border:1px solid var(--line);border-radius:12px;background:var(--bg2);display:flex;flex-direction:column;gap:6px;min-width:0}
+.feat p{font-size:14.5px;color:var(--tx2)}
+
+details{border:1px solid var(--line);border-radius:12px;background:var(--bg2);max-width:100%}
+details+details{margin-top:8px}
+summary{cursor:pointer;padding:14px 16px;font-weight:600;list-style:none;display:flex;justify-content:space-between;gap:12px}
+summary::-webkit-details-marker{display:none}
+summary::after{content:"+";color:var(--gold2);font-weight:400;font-size:20px;line-height:1}
+details[open] summary::after{content:"–"}
+details .in{padding:0 16px 16px;display:flex;flex-direction:column;gap:12px}
+
+/* atualizações */
+.log{display:flex;flex-direction:column;gap:0;border-left:1px solid var(--line2);margin-left:6px}
+.log .it{position:relative;padding:0 0 18px 20px;display:flex;flex-direction:column;gap:3px;max-width:68ch}
+.log .it::before{content:"";position:absolute;left:-5px;top:7px;width:9px;height:9px;border-radius:50%;background:var(--gold)}
+.log time{font:600 13px var(--sans);color:var(--tx3);font-variant-numeric:tabular-nums}
+
+/* contato */
+.contato{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr));gap:10px}
+.ct{padding:16px;border:1px solid var(--line2);border-radius:12px;background:var(--bg2);display:flex;flex-direction:column;gap:6px}
+.ct .v{font:500 18px var(--sans);user-select:all;word-break:break-all}
+.ct a.btn{align-self:flex-start;margin-top:4px}
+a.btn{display:inline-block;background:var(--gold);color:#0D131D;text-decoration:none;font-weight:600;padding:10px 16px;border-radius:10px}
+a.btn:hover{background:var(--gold2)}
+footer{padding-block:40px 60px;border-top:1px solid var(--line);color:var(--tx3);font-size:14px;display:flex;flex-direction:column;gap:6px;align-items:center;text-align:center}
+footer img{width:20px}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="w">
+    <img src="chama.png" alt="">
+    <b>ModoAnki R1</b>
+    <nav aria-label="Seções">
+      <a href="#decks">Decks</a><a href="#config">Anki</a><a href="#ankiweb">AnkiWeb</a><a href="#addon">Modo Prova</a><a href="#guias">Guias</a><a href="#atualizacoes">Atualizações</a><a href="#ajuda">Ajuda</a>
+    </nav>
+  </div>
+</header>
+
+<main class="w">
+  <div class="hero">
+    <span class="k">Área do membro</span>
+    <h1>Bem-vindo ao ModoAnki R1!</h1>
+    <p class="lead">Para começar a usar o ModoAnki são <strong>4 passos básicos</strong>. Faça na ordem, no computador, e marque cada um quando terminar.</p>
+    <div class="trilho" id="trilho">
+      <a href="#decks" data-p="decks"><span class="n">Passo 1 <i></i></span><span>Baixar e importar os decks das 5 grandes áreas</span></a>
+      <a href="#config" data-p="config"><span class="n">Passo 2 <i></i></span><span>Configurações iniciais do Anki</span></a>
+      <a href="#ankiweb" data-p="ankiweb"><span class="n">Passo 3 <i></i></span><span>Criar a conta AnkiWeb e sincronizar</span></a>
+      <a href="#addon" data-p="addon"><span class="n">Passo 4 <i></i></span><span>Instalar o add-on Modo Prova R1</span></a>
+    </div>
+    <p class="free"><span>✦</span><span><b>Atualizações, novas provas e novas bancas são sem custo.</b> Você recebe cada atualização por e-mail, e os arquivos novos aparecem sempre aqui nesta página.</span></p>
+  </div>
+
+  <!-- PASSO 1 -->
+  <section class="passo" id="decks">
+    <div class="passo-h"><span class="num">1</span><h2>Baixe os decks das 5 grandes áreas</h2><label class="marcar"><input type="checkbox" data-p="decks" id="ck-decks"> Feito</label></div>
+    <p class="mut">Um arquivo .apkg por área. Baixe todos e importe um por vez.</p>
+    <div class="decks">
+      <a class="dl" href="https://drive.google.com/file/d/1L2nO91x2b4PoK15jF0f-zh6nOGonm1DR/view?usp=drive_link" target="_blank" rel="noopener"><span class="sig">CM</span><span class="tx"><b>Clínica Médica</b><small>V2 incidência · 28,5 MB</small></span><span class="seta">↓</span></a>
+      <a class="dl" href="https://drive.google.com/file/d/1eLf5wR7pnZQFnNwHXqqmPBcJ4huZjcsr/view?usp=drive_link" target="_blank" rel="noopener"><span class="sig">CG</span><span class="tx"><b>Cirurgia Geral</b><small>V2 incidência · 29,1 MB</small></span><span class="seta">↓</span></a>
+      <a class="dl" href="https://drive.google.com/file/d/1tO0D5N_S1FCqr2Pd62_RpiR2PyxifbQW/view?usp=drive_link" target="_blank" rel="noopener"><span class="sig">GO</span><span class="tx"><b>Ginecologia e Obstetrícia</b><small>V2 incidência · 9,7 MB</small></span><span class="seta">↓</span></a>
+      <a class="dl" href="https://drive.google.com/file/d/1FBTRy-ubMI_1Gmnf_MkZ6G-SDpO8vXoH/view?usp=drive_link" target="_blank" rel="noopener"><span class="sig">PED</span><span class="tx"><b>Pediatria <span class="novo">revisado</span></b><small>V2 revisado em 06/11 · 16,7 MB</small></span><span class="seta">↓</span></a>
+      <a class="dl" href="https://drive.google.com/file/d/1LjlAdP60mvt5MrVUm63XDKpc_04hxlOD/view?usp=drive_link" target="_blank" rel="noopener"><span class="sig">PREV</span><span class="tx"><b>Preventiva</b><small>V2 incidência · 5,4 MB</small></span><span class="seta">↓</span></a>
+    </div>
+    <h3>Como importar</h3>
+    <ol class="steps">
+      <li>Abra o Anki no computador.</li>
+      <li>Dê dois cliques em cada arquivo .apkg (ou vá em <kbd>Arquivo</kbd> → <kbd>Importar</kbd>).</li>
+      <li><b>Não mexa nas opções da janela de importação.</b> É só confirmar.</li>
+      <li>Repita para as 5 áreas.</li>
+    </ol>
+    <p class="dica">O Google Drive pode avisar que "não foi possível verificar se há vírus" nos arquivos grandes. É normal para arquivos acima de 25 MB: clique em <b>Fazer o download assim mesmo</b>.</p>
+  </section>
+
+  <!-- PASSO 2 -->
+  <section class="passo" id="config">
+    <div class="passo-h"><span class="num">2</span><h2>Configurações iniciais do Anki</h2><label class="marcar"><input type="checkbox" data-p="config" id="ck-config"> Feito</label></div>
+    <ol class="steps">
+      <li>Baixe o Anki para computador em <a href="https://apps.ankiweb.net" target="_blank" rel="noopener">apps.ankiweb.net</a> (Windows ou Mac). Use a versão 2.1.50 ou mais nova: o add-on Modo Prova precisa dela.</li>
+      <li>Siga o <b>Guia de Flashcards ModoAnki</b> para deixar o Anki configurado do jeito que os decks foram pensados.</li>
+      <li>Vai estudar no iPhone? O app AnkiMobile é pago, mas você pode revisar de graça pelo navegador (veja o passo 3). Se comprar o app, use o guia <b>Configurando o AnkiMobile (iOS)</b>.</li>
+    </ol>
+    <div class="decks">
+      <a class="dl" href="https://drive.google.com/file/d/1HdI0weK_GLJBU_R1PhAaXJWp426H_NVE/view?usp=drive_link" target="_blank" rel="noopener"><span class="sig">PDF</span><span class="tx"><b>Guia de Flashcards ModoAnki</b><small>PDF · 7 MB</small></span><span class="seta">↗</span></a>
+      <a class="dl" href="https://drive.google.com/file/d/1woik34JAnpyDLdARAnCPPVC1l56dYtoS/view?usp=drive_link" target="_blank" rel="noopener"><span class="sig">iOS</span><span class="tx"><b>Configurando o AnkiMobile (iOS)</b><small>PDF · 2,8 MB</small></span><span class="seta">↗</span></a>
+    </div>
+  </section>
+
+  <!-- PASSO 3 -->
+  <section class="passo" id="ankiweb">
+    <div class="passo-h"><span class="num">3</span><h2>Crie a conta AnkiWeb e sincronize</h2><label class="marcar"><input type="checkbox" data-p="ankiweb" id="ck-ankiweb"> Feito</label></div>
+    <p class="mut">A conta AnkiWeb é gratuita e é o que leva seus cards e seu progresso do computador para o celular.</p>
+    <ol class="steps">
+      <li>No navegador, crie sua conta em <a href="https://ankiweb.net/account/signup" target="_blank" rel="noopener">ankiweb.net</a> e confirme o e-mail.</li>
+      <li>No Anki do computador, clique em <kbd>Sincronizar</kbd> (canto superior direito) e entre com o e-mail e a senha da conta.</li>
+      <li>No celular, entre com a mesma conta no app (AnkiDroid no Android, AnkiMobile no iPhone) e sincronize.</li>
+    </ol>
+    <div class="aviso"><b>Tem iPhone?</b> O app oficial do Anki para iOS (AnkiMobile) é pago na App Store. Você não precisa comprar: dá para revisar de graça pelo navegador do celular, entrando em <a href="https://ankiweb.net" target="_blank" rel="noopener">ankiweb.net</a> com a mesma conta e tocando em <b>Estudar</b>. Seus cards e seu progresso ficam sincronizados com o computador do mesmo jeito.</div>
+    <p class="dica">Sincronize sempre <b>depois</b> de importar os decks ou instalar uma atualização no computador. Assim o celular recebe a versão nova.</p>
+  </section>
+
+  <!-- PASSO 4 -->
+  <section class="passo" id="addon">
+    <div class="passo-h"><span class="num">4</span><h2>Instale o add-on Modo Prova R1</h2><label class="marcar"><input type="checkbox" data-p="addon" id="ck-addon"> Feito</label></div>
+    <p class="mut">O Modo Prova é uma extensão do Anki que organiza seus estudos com o ModoAnki.</p>
+    <a class="dl grande" href="https://drive.google.com/file/d/1UzYJxlS0iMin2tSbWrstX-t03fqp5p69/view?usp=drive_link" target="_blank" rel="noopener"><span class="sig">R1</span><span class="tx"><b>ModoAnki - Modo Prova.ankiaddon <span class="novo">atualizado</span></b><small>versão de 06/11 · 2 MB</small></span><span class="seta">↓</span></a>
+    <p class="aviso">⚠️ O Modo Prova funciona no Anki do computador (Windows ou Mac), versão 2.1.50 ou mais nova. Os cards que você estuda continuam sincronizando com o celular normalmente.</p>
+
+    <h3>Instalação</h3>
+    <ol class="steps">
+      <li>Importe os decks primeiro (passo 1). O Modo Prova trabalha em cima dos decks ModoAnki.</li>
+      <li>Baixe o arquivo <b>ModoAnki - Modo Prova.ankiaddon</b> no botão acima.</li>
+      <li>No Anki, vá em <kbd>Ferramentas</kbd> → <kbd>Complementos</kbd>.</li>
+      <li>Clique em <kbd>Instalar de arquivo…</kbd> e escolha o arquivo que você baixou.</li>
+      <li>Feche e abra o Anki de novo.</li>
+    </ol>
+    <p>Pronto: vai aparecer <b>Modo Prova</b> na barra de cima do Anki, ao lado de Decks, Adicionar e Navegar. O mesmo atalho também fica em <kbd>Ferramentas</kbd> → <kbd>Modo Prova (ModoAnki)</kbd>.</p>
+
+    <h3>O que ele faz</h3>
+    <div class="feats">
+      <div class="feat"><h3>Plano até a prova</h3><p>Divide os cards novos em blocos por tema e calcula quantos por dia você precisa para terminar a tempo, deixando os últimos dias só para revisão.</p></div>
+      <div class="feat"><h3>Errei uma questão</h3><p>Digite banca, ano e número (ex.: USP 2024 37) e ele acha os cards ligados àquela questão.</p></div>
+      <div class="feat"><h3>Revisar uma prova</h3><p>Escolha a prova que você fez, marque os números das que errou e ele monta um baralho só com esses cards.</p></div>
+      <div class="feat"><h3>Seu personagem</h3><p>Na tela inicial, um interno empurra a pedra de Sísifo com você: sobe de patente conforme você avança no ModoAnki e fecha o plantão quando você termina o dia.</p></div>
+    </div>
+
+    <h3>Como usar</h3>
+    <details>
+      <summary>Monte seu plano</summary>
+      <div class="in">
+        <p>Clique em <b>Modo Prova</b> e escolha como você está estudando:</p>
+        <ul class="lista">
+          <li><b>Prova:</b> escolha a prova (ENAMED, USP, UNICAMP…) e confira a data da prova.</li>
+          <li><b>Rodízio:</b> escolha a grande área do rodízio e quando ele termina.</li>
+          <li><b>Cursinho:</b> informe até quando vai o módulo ou a semana.</li>
+        </ul>
+        <p class="dica">Os cards novos são divididos em <b>Etapa 1 · Prioritários</b> (os temas que mais caem) e <b>Etapa 2 · Alta prevalência</b> (o restante).</p>
+      </div>
+    </details>
+    <details>
+      <summary>Estude o dia</summary>
+      <div class="in">
+        <ol class="steps">
+          <li>No bloco marcado como próximo, clique em <b>Estudar</b>.</li>
+          <li>O Anki abre o deck "ModoAnki · Modo Prova (cards novos de hoje)". É só estudar normalmente.</li>
+          <li>Depois de estudar, os cards voltam sozinhos para os decks de origem, com o histórico salvo.</li>
+        </ol>
+        <ul class="lista">
+          <li><b>✓ Já estudei este bloco:</b> use se você já viu esse conteúdo antes.</li>
+          <li><b>⤼ Pular por enquanto:</b> tira o bloco do plano, sem mexer nos cards.</li>
+        </ul>
+        <p class="dica">Suas revisões do dia continuam aparecendo nos decks normais. Faça sempre as revisões primeiro e depois os cards novos do plano.</p>
+      </div>
+    </details>
+    <details>
+      <summary>Errei uma questão, e agora?</summary>
+      <div class="in">
+        <ol class="steps">
+          <li>Na parte <b>Errei uma questão</b>, digite banca, ano e número. Exemplo: USP 2024 37. Se não souber o número, cole o começo do enunciado.</li>
+          <li>Clique em <b>Achar cards</b>. Aparecem os cards ligados àquela questão.</li>
+          <li>Clique em <b>Revisar esses cards agora</b> para estudar só eles, ou em <b>Abrir no navegador</b> para ver os cards no Anki.</li>
+        </ol>
+        <p>Fez uma prova inteira? Use <b>Revisar uma prova</b>: escolha a prova, digite os números das questões que errou (aceita intervalos, como 12-15) e clique em <b>Montar revisão</b>.</p>
+      </div>
+    </details>
+    <details>
+      <summary>A faixa na tela inicial</summary>
+      <div class="in">
+        <p>Na tela de decks do Anki aparece uma faixa com:</p>
+        <ul class="lista">
+          <li>o seu personagem e a meta do dia (revisões e novos do plano);</li>
+          <li>seus dias seguidos de estudo;</li>
+          <li>os cards de hoje e os minutos estudados;</li>
+          <li>o seu acerto nos últimos 30 dias;</li>
+          <li>quanto do ModoAnki você já viu;</li>
+          <li>quantos dias faltam para a prova.</li>
+        </ul>
+        <p>Clique em <b>Abrir Modo Prova</b> para entrar direto no seu plano.</p>
+      </div>
+    </details>
+  </section>
+
+  <!-- GUIAS -->
+  <section class="passo" id="guias">
+    <div class="passo-h"><h2>Guias em PDF</h2></div>
+    <div class="decks">
+      <a class="dl" href="https://drive.google.com/file/d/1HdI0weK_GLJBU_R1PhAaXJWp426H_NVE/view?usp=drive_link" target="_blank" rel="noopener"><span class="sig">PDF</span><span class="tx"><b>Guia de Flashcards ModoAnki</b><small>PDF · 7 MB</small></span><span class="seta">↗</span></a>
+      <a class="dl" href="https://drive.google.com/file/d/1woik34JAnpyDLdARAnCPPVC1l56dYtoS/view?usp=drive_link" target="_blank" rel="noopener"><span class="sig">iOS</span><span class="tx"><b>Configurando o AnkiMobile (iOS)</b><small>PDF · 2,8 MB</small></span><span class="seta">↗</span></a>
+    </div>
+  </section>
+
+  <!-- ATUALIZAÇÕES -->
+  <section class="passo" id="atualizacoes">
+    <div class="passo-h"><h2>Atualizações</h2></div>
+    <details open>
+      <summary>Como atualizar sem perder seu progresso</summary>
+      <div class="in">
+        <ol class="steps">
+          <li><b>Faça um backup antes:</b> no Anki, vá em <kbd>Arquivo</kbd> → <kbd>Criar backup</kbd>.</li>
+          <li><b>Não apague seus decks antigos.</b> A versão nova entra por cima: os cards que você já estuda são atualizados e só os novos são adicionados. Suas revisões e o agendamento continuam iguais.</li>
+          <li>Dê dois cliques no arquivo .apkg novo e <b>não mexa nas opções da janela de importação</b>.</li>
+          <li>Add-on novo: <kbd>Ferramentas</kbd> → <kbd>Complementos</kbd> → <kbd>Instalar de arquivo…</kbd>, por cima do anterior, e reinicie o Anki.</li>
+          <li>Sincronize no computador para o celular receber a versão nova.</li>
+        </ol>
+        <p class="dica">Se você editou algum card por conta própria, sua edição é mantida. Se algo parecer estranho depois de importar, me chame antes de apagar qualquer coisa: com o backup, dá para voltar atrás.</p>
+      </div>
+    </details>
+    <div class="log">
+      <div class="it"><time datetime="2026-11-06">06/11/2026</time><b>Pediatria V2 revisada</b><span class="mut">Revisão completa do deck: 280 cards corrigidos (grafia, doses, condutas atualizadas). Baixe o PED de novo no passo 1 e importe por cima.</span></div>
+      <div class="it"><time datetime="2026-11-06">06/11/2026</time><b>Modo Prova: personagem, Revisar uma prova e meta do dia</b><span class="mut">Personagem com patentes na tela inicial, baralho com os cards das questões que você errou numa prova, meta do dia fixa e botão para baixar seus dados de estudo. Baixe o add-on de novo no passo 4.</span></div>
+      <div class="it"><time datetime="2026-10-27">27/10/2026</time><b>Lançamento da V2</b><span class="mut">Incidência por prova em cada card, 2.749 questões de 7 bancas, HIGH-YIELD com chamas, deck de Preventiva e o add-on Modo Prova.</span></div>
+    </div>
+  </section>
+
+  <!-- AJUDA -->
+  <section class="passo" id="ajuda">
+    <div class="passo-h"><h2>Ficou com dúvida?</h2></div>
+    <p class="mut">Me chame em qualquer momento do processo. Não hesite.</p>
+    <div class="contato">
+      <div class="ct"><span class="k">WhatsApp</span><span class="v">(49) 99105-6014</span><span class="mut">Felipe Torres, desenvolvedor do ModoAnki</span><a class="btn" href="https://wa.me/5549991056014" target="_blank" rel="noopener">Abrir conversa</a></div>
+      <div class="ct"><span class="k">E-mail</span><span class="v">felipedelimatorres@gmail.com</span><span class="mut">Ou responda o e-mail de acesso.</span></div>
+    </div>
+  </section>
+</main>
+
+<footer class="w">
+  <img src="chama.png" alt="">
+  <p>Aproveite sua revisão. Bons estudos!</p>
+  <p>ModoAnki R1 · Felipe Torres</p>
+</footer>
+
+<script>
+(function(){
+  var KEY='modoanki_passos';
+  var feito={};
+  try{feito=JSON.parse(localStorage.getItem(KEY)||'{}')||{}}catch(e){}
+  function pinta(){
+    document.querySelectorAll('#trilho a').forEach(function(a){a.classList.toggle('feito',!!feito[a.dataset.p])});
+    document.querySelectorAll('input[data-p]').forEach(function(c){c.checked=!!feito[c.dataset.p]});
+  }
+  document.querySelectorAll('input[data-p]').forEach(function(c){
+    c.addEventListener('change',function(){feito[c.dataset.p]=c.checked;try{localStorage.setItem(KEY,JSON.stringify(feito))}catch(e){}pinta()});
+  });
+  pinta();
+})();
+</script>
+</body>
+</html>
